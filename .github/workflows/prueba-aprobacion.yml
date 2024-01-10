@@ -1,21 +1,34 @@
-name: Prueba de Flujo de Trabajo con Aprobación
+name: Flujo de Trabajo Principal
 
 on:
-  workflow_run:
-    workflows: ["flujo_de_trabajo"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Verificar aprobación manual
-        run: |
-          if [ "${{ github.event.workflow_run.conclusion }}" == "success" ]; then
-            echo "El flujo de trabajo fue aprobado."
-          else
-            echo "El flujo de trabajo no fue aprobado."
-            exit 1
-          fi
+      - name: Checkout del código
+        uses: actions/checkout@v2
+
+      # Aquí van tus pasos de construcción, prueba, etc.
+
+  approve:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Aprobar
+        id: approve
+        run: echo "Se requiere aprobación manual"
+      - name: Establecer aprobación
+        run: echo "::set-output name=approved::true"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: approve
+    if: needs.approve.outputs.approved == 'true'
+    steps:
+      - name: Despliegue
+        run: echo "Despliegue del código a producción"
