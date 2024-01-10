@@ -1,34 +1,24 @@
-name: Flujo de Trabajo Principal
-
+name: prueba aut
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Número de versión para el pre-release a crear. Ejemplo 1.1.3. | En caso de hotfix especificar la rama fix/. Ejemplo. fix/3.0.1
+        required: true
+        type: string
+      dynamodb:
+        description: 'Desmarcar la casilla para desactivar la insercion a DynamoDB'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
-  build:
+  prueba:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v2
+    - name: Checkout del código
+      uses: actions/checkout@v2
 
-      # Aquí van tus pasos de construcción, prueba, etc.
-
-  approve:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Aprobar
-        id: approve
-        run: echo "Se requiere aprobación manual"
-      - name: Establecer aprobación
-        run: echo "::set-output name=approved::true"
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: approve
-    if: needs.approve.outputs.approved == 'true'
-    steps:
-      - name: Despliegue
-        run: echo "Despliegue del código a producción"
+    - name: Ejecutar prueba
+      run: echo "prueba de GitHub Action"
