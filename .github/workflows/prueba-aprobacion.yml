@@ -1,0 +1,21 @@
+name: Prueba de Flujo de Trabajo con Aprobación
+
+on:
+  workflow_run:
+    workflows: ["flujo_de_trabajo"]
+    types:
+      - completed
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verificar aprobación manual
+        run: |
+          if [ "${{ github.event.workflow_run.conclusion }}" == "success" ]; then
+            echo "El flujo de trabajo fue aprobado."
+          else
+            echo "El flujo de trabajo no fue aprobado."
+            exit 1
+          fi
