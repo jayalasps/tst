@@ -20,5 +20,9 @@ jobs:
     - name: Checkout del código
       uses: actions/checkout@v2
 
+    - name: Revisión manual
+      run: echo "Por favor, revisa y aprueba la Pull Request. Después, puedes ejecutar el flujo de trabajo."
+
     - name: Ejecutar prueba
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.version && github.event.inputs.dynamodb
       run: echo "prueba de GitHub Action"
